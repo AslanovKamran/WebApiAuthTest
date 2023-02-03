@@ -10,6 +10,7 @@ namespace UdemyCourse.Profiles
 		public RegionProfile()
 		{
 			CreateMap<Region, RegionDTO>().ReverseMap();
+			CreateMap<PostRegionRequest, Region>().ReverseMap();
 		}
 	}
 }

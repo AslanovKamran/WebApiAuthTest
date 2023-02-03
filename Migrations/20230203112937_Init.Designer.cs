@@ -12,8 +12,8 @@ using UdemyCourse.Data;
 namespace UdemyCourse.Migrations
 {
     [DbContext(typeof(WalksDbContext))]
-    [Migration("20230130143649_Initial")]
-    partial class Initial
+    [Migration("20230203112937_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
