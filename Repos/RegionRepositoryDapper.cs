@@ -42,7 +42,7 @@ namespace UdemyCourse.Repos
 				var Id = Guid.NewGuid();
 				region.Id = Id;
 				string query = @"INSERT INTO Regions (Id, Code, Name, Area, Lat, Long, Population) 
-								VALUES (@Id, @Code, @Name, @Area, @Lat, @Long, @Population);";
+								VALUES (@Id, @Code, @Name, @Area, @Lat, @Long, @Population)";
 
 				await db.ExecuteAsync(query, region);
 				return region;
@@ -63,7 +63,7 @@ namespace UdemyCourse.Repos
 		{
 			using (IDbConnection db = new SqlConnection(_connectionString))
 			{
-				string query = @"UPDATE Regions SET Name = @Name, @Area = @Area, Lat = @Lat, Long = @Long, Population = @Population WHERE Id = @Id";
+				string query = @"UPDATE Regions SET Name = @Name, Area = @Area, Lat = @Lat, Long = @Long, Population = @Population WHERE Id = @Id";
 				await db.ExecuteAsync(query, region);
 				return region;
 			}

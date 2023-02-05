@@ -15,6 +15,5 @@
 		public double Long { get; set; }
 
 		public double Population { get; set; }
-
 	}
 }
