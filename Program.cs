@@ -22,11 +22,14 @@ namespace UdemyCourse
 			//					(provider => new RegionRepositoryDapper(_connectionString!));
 			//builder.Services.AddScoped<IWalkRepository, WalkRepositoryDapper>
 			//					(provider => new WalkRepositoryDapper(_connectionString!));
+			//builder.Services.AddScoped<IWalkDifficultyRepository, WalkDifficultyRepositoryDapper>
+			//					(provider => new WalkDifficultyRepositoryDapper(_connectionString!));
 			#endregion
 
 			#region EF Core
 			builder.Services.AddScoped<IRegionRepository, RegionRepository>();
 			builder.Services.AddScoped<IWalkRepository, WalkRepository>();
+			builder.Services.AddScoped<IWalkDifficultyRepository, WalkDifficultyRepository>();
 
 			builder.Services.AddDbContext<WalksDbContext>((options) =>
 			{

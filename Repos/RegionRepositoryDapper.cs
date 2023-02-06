@@ -54,7 +54,7 @@ namespace UdemyCourse.Repos
 		{
 			using (IDbConnection db = new SqlConnection(_connectionString))
 			{
-				string query = "DELETE FROM Regions Where Regions.Id =@id";
+				string query = "DELETE FROM Regions Where Regions.Id = @id";
 				await db.ExecuteAsync(query, new { id });
 			}
 		}
@@ -63,7 +63,7 @@ namespace UdemyCourse.Repos
 		{
 			using (IDbConnection db = new SqlConnection(_connectionString))
 			{
-				string query = @"UPDATE Regions SET Name = @Name, Area = @Area, Lat = @Lat, Long = @Long, Population = @Population WHERE Id = @Id";
+				string query = @"UPDATE Regions SET Name = @Name, Area = @Area, Lat = @Lat, Long = @Long, Population = @Population WHERE Id = @id";
 				await db.ExecuteAsync(query, region);
 				return region;
 			}

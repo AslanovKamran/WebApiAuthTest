@@ -55,14 +55,6 @@ namespace UdemyCourse.Controllers
 			return CreatedAtAction(nameof(GetRegion), new { id = regionDTO.Id }, regionDTO);
 		}
 
-		[HttpDelete]
-		[Route("{id}")]
-		public async Task<IActionResult> DeleteRegion(Guid id)
-		{
-			await _repos.DeleteRegionAsync(id);
-			return NoContent();
-		}
-
 		[HttpPut]
 		[ProducesResponseType(404)]
 		[ProducesResponseType(200)]
@@ -70,6 +62,15 @@ namespace UdemyCourse.Controllers
 		{
 			region = await _repos.UpdateRegionAsync(region);
 			return region == null ? NotFound() : Ok(_mapper.Map<RegionDTO>(region));
+		}
+
+		[HttpDelete]
+		[ProducesResponseType(204)]
+		[Route("{id}")]
+		public async Task<IActionResult> DeleteRegion(Guid id)
+		{
+			await _repos.DeleteRegionAsync(id);
+			return NoContent();
 		}
 	}
 }

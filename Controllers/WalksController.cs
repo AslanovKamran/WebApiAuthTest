@@ -6,8 +6,9 @@ using UdemyCourse.Repos;
 
 namespace UdemyCourse.Controllers
 {
-	[Route("api/[controller]")]
 	[ApiController]
+	[Route("api/[controller]")]
+	[Produces("application/json")]
 	public class WalksController : ControllerBase
 	{
 		private readonly IWalkRepository _repos;
@@ -72,6 +73,7 @@ namespace UdemyCourse.Controllers
 		}
 
 		[HttpDelete]
+		[ProducesResponseType(204)]
 		[Route("{id}")]
 		public async Task<IActionResult> DeleteWalk(Guid id)
 		{
