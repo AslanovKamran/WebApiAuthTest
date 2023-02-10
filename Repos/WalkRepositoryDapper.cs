@@ -32,8 +32,16 @@ namespace UdemyCourse.Repos
 		{
 			using (IDbConnection db = new SqlConnection(_connectionString))
 			{
-				string query = @"SELECT * FROM Walks";
-				var walks =  (await db.QueryAsync<Walk>(query, null)).ToList();
+				string query = @"
+								SELECT wh.*,re.*, wd.* FROM Walks AS wh
+								JOIN Regions AS re ON re.Id = wh.RegionId
+								JOIN WalkDifficulty AS wd ON wd.Id = wh.WalkDifficultyId";
+				var walks =  (await db.QueryAsync<Walk, Region, WalkDifficulty, Walk>(query, (walk, region, walkDifficulty) => 
+				{
+					walk.Region = region;
+					walk.WalkDifficulty = walkDifficulty;
+					return walk;
+				})).ToList();
 				return walks;
 			}
 		}
@@ -42,11 +50,21 @@ namespace UdemyCourse.Repos
 		{
 			using (IDbConnection db = new SqlConnection(_connectionString))
 			{
-				var parameters = new DynamicParameters();
-				parameters.Add("id", id, DbType.Guid, ParameterDirection.Input);
+				var p = new { Id = id };
+				
 
-				string query = "SELECT * FROM Walks WHERE Id = @id";
-				return await(db.QueryFirstOrDefaultAsync<Walk>(query, parameters));
+				string query = @"SELECT wh.*,re.*, wd.* FROM Walks AS wh
+								JOIN Regions AS re ON re.Id = wh.RegionId
+								JOIN WalkDifficulty AS wd ON wd.Id = wh.WalkDifficultyId
+								WHERE wh.Id = @Id";
+				var walk = (await db.QueryAsync<Walk, Region, WalkDifficulty, Walk>(query, (walk, region, walkDifficulty) =>
+				{
+					walk.Region = region;
+					walk.WalkDifficulty = walkDifficulty;
+					return walk;
+				}, p)).FirstOrDefault();
+
+				return walk!;
 			}
 		}
 

@@ -18,23 +18,23 @@ namespace UdemyCourse
 			var _connectionString = builder.Configuration.GetConnectionString("Default");
 
 			#region Dapper
-			//builder.Services.AddScoped<IRegionRepository, RegionRepositoryDapper>
-			//					(provider => new RegionRepositoryDapper(_connectionString!));
-			//builder.Services.AddScoped<IWalkRepository, WalkRepositoryDapper>
-			//					(provider => new WalkRepositoryDapper(_connectionString!));
-			//builder.Services.AddScoped<IWalkDifficultyRepository, WalkDifficultyRepositoryDapper>
-			//					(provider => new WalkDifficultyRepositoryDapper(_connectionString!));
+			builder.Services.AddScoped<IRegionRepository, RegionRepositoryDapper>
+								(provider => new RegionRepositoryDapper(_connectionString!));
+			builder.Services.AddScoped<IWalkRepository, WalkRepositoryDapper>
+								(provider => new WalkRepositoryDapper(_connectionString!));
+			builder.Services.AddScoped<IWalkDifficultyRepository, WalkDifficultyRepositoryDapper>
+								(provider => new WalkDifficultyRepositoryDapper(_connectionString!));
 			#endregion
 
 			#region EF Core
-			builder.Services.AddScoped<IRegionRepository, RegionRepository>();
-			builder.Services.AddScoped<IWalkRepository, WalkRepository>();
-			builder.Services.AddScoped<IWalkDifficultyRepository, WalkDifficultyRepository>();
+			//builder.Services.AddScoped<IRegionRepository, RegionRepository>();
+			//builder.Services.AddScoped<IWalkRepository, WalkRepository>();
+			//builder.Services.AddScoped<IWalkDifficultyRepository, WalkDifficultyRepository>();
 
-			builder.Services.AddDbContext<WalksDbContext>((options) =>
-			{
-				options.UseSqlServer(_connectionString);
-			});
+			//builder.Services.AddDbContext<WalksDbContext>((options) =>
+			//{
+			//	options.UseSqlServer(_connectionString);
+			//});
 			#endregion
 
 
