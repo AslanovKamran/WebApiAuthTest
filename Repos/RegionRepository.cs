@@ -9,7 +9,9 @@ namespace UdemyCourse.Repos
 		private readonly WalksDbContext _context;
 
 		public RegionRepository(WalksDbContext context)
-		=> _context = context;
+		{ 
+			_context = context;
+		}
 
 		public async Task<IEnumerable<Region>> GetAllRegionsAsync()
 		=> await _context.Regions.ToListAsync();

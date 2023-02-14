@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using UdemyCourse.Models.Domain;
 using UdemyCourse.Models.DTOs;
 using UdemyCourse.Repos;
+using UdemyCourse.Validators;
 
 namespace UdemyCourse.Controllers
 {
@@ -13,10 +14,15 @@ namespace UdemyCourse.Controllers
 	{
 		private readonly IWalkRepository _repos;
 		private readonly IMapper _mapper;
-		public WalksController(IWalkRepository repos, IMapper mapper)
+		private readonly IRegionRepository _regionRepository;
+		private readonly IWalkDifficultyRepository _wdRepository;
+
+		public WalksController(IWalkRepository repos, IMapper mapper, IRegionRepository regionRepository, IWalkDifficultyRepository wdRepository)
 		{
 			_repos = repos;
 			_mapper = mapper;
+			_regionRepository = regionRepository;
+			_wdRepository = wdRepository;
 		}
 
 		[HttpGet]
@@ -45,8 +51,10 @@ namespace UdemyCourse.Controllers
 
 		[HttpPost]
 		[ProducesResponseType(201)]
+		[ProducesResponseType(400)]
 		public async Task<IActionResult> PostWalk(PostWalkRequest request)
 		{
+			if (!await WalkValidator.ValidatePostWalk(request,ModelState,_regionRepository,_wdRepository)) return BadRequest(ModelState);
 			var walk = _mapper.Map<Walk>(request);
 			walk = await _repos.AddWalkAsync(walk);
 			var walkDto = _mapper.Map<WalkDTO>(walk);
@@ -59,6 +67,8 @@ namespace UdemyCourse.Controllers
 		[ProducesResponseType(200)]
 		public async Task<IActionResult> UpdateWalk(UpdateWalkRequest request)
 		{
+			if (!await WalkValidator.ValidateUpdateWalk(request,ModelState,_repos,_regionRepository,_wdRepository)) return BadRequest(ModelState);
+
 			Walk walkDomain = new Walk()
 			{
 				Id = request.Id,
@@ -80,6 +90,7 @@ namespace UdemyCourse.Controllers
 			await _repos.DeleteWalkAsync(id);
 			return Ok();
 		}
+
 
 	}
 }

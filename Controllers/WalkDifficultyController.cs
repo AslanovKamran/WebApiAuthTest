@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using UdemyCourse.Models.Domain;
 using UdemyCourse.Models.DTOs;
 using UdemyCourse.Repos;
+using UdemyCourse.Validators;
 
 namespace UdemyCourse.Controllers
 {
@@ -37,8 +37,10 @@ namespace UdemyCourse.Controllers
 
 		[HttpPost]
 		[ProducesResponseType(201)]
+		[ProducesResponseType(400)]
 		public async Task<IActionResult> PostDifficulty(PostDifficultyRequest request)
 		{
+			if(!WalkDifficultyValidator.ValidatePostDifficulty(request, ModelState)) return BadRequest(ModelState);
 			var wdDomain = new WalkDifficulty() { Id = Guid.Empty, Code = request.Code };
 			wdDomain = await _repos.AddWalkDifficultyAsync(wdDomain);
 			return CreatedAtAction(nameof(GetDifficulty), new { id = wdDomain.Id }, wdDomain);
@@ -48,8 +50,12 @@ namespace UdemyCourse.Controllers
 		[HttpPut]
 		[ProducesResponseType(404)]
 		[ProducesResponseType(200)]
+		[ProducesResponseType(400)]
+		
 		public async Task<IActionResult> UpdateDifficulty(WalkDifficulty difficulty)
 		{
+			if (!await WalkDifficultyValidator.ValidateUpdateDifficulty(difficulty, ModelState, _repos)) return BadRequest(ModelState);
+
 			difficulty = await _repos.UpdateWalkDifficultyAsync(difficulty);
 			return difficulty == null ? NotFound() : Ok(difficulty);
 		}
@@ -63,4 +69,5 @@ namespace UdemyCourse.Controllers
 			return NoContent();
 		}
 	}
+
 }

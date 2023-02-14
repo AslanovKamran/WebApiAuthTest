@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using UdemyCourse.Models.Domain;
 using UdemyCourse.Models.DTOs;
 using UdemyCourse.Repos;
+using UdemyCourse.Validators;
 
 namespace UdemyCourse.Controllers
 {
@@ -27,7 +28,7 @@ namespace UdemyCourse.Controllers
 		{
 			var regions = await _repos.GetAllRegionsAsync();
 
-			//return DTO Regions
+		
 			var result = _mapper.Map<List<RegionDTO>>(regions);
 			return Ok(result);
 		}
@@ -46,22 +47,32 @@ namespace UdemyCourse.Controllers
 
 		[HttpPost]
 		[ProducesResponseType(201)]
+		[ProducesResponseType(400)]
 		public async Task<IActionResult> PostRegion(PostRegionRequest request)
 		{
+			//Validate the request
+			if (!RegionValidator.ValidatePostRegion(request,ModelState)) return BadRequest(ModelState);
+
 			var region = _mapper.Map<Region>(request);
 			region = await _repos.AddRegionAsync(region);
 			var regionDTO = _mapper.Map<RegionDTO>(region);
 
 			return CreatedAtAction(nameof(GetRegion), new { id = regionDTO.Id }, regionDTO);
+
 		}
 
 		[HttpPut]
 		[ProducesResponseType(404)]
+		[ProducesResponseType(400)]
 		[ProducesResponseType(200)]
-		public async Task<IActionResult> UpdateRegion( Region region)
+		public async Task<IActionResult> UpdateRegion(Region region)
 		{
-			region = await _repos.UpdateRegionAsync(region);
-			return region == null ? NotFound() : Ok(_mapper.Map<RegionDTO>(region));
+			if (ModelState.IsValid)
+			{
+				region = await _repos.UpdateRegionAsync(region);
+				return region == null ? NotFound() : Ok(_mapper.Map<RegionDTO>(region));
+			}
+			else return BadRequest(ModelState);
 		}
 
 		[HttpDelete]
@@ -72,5 +83,10 @@ namespace UdemyCourse.Controllers
 			await _repos.DeleteRegionAsync(id);
 			return NoContent();
 		}
+
+
+
+
+		
 	}
 }
