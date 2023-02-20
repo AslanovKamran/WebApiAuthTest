@@ -7,10 +7,10 @@ namespace UdemyCourse.Models.DTOs
 		[Key]
 		public Guid Id { get; set; }
 
-		[Required(AllowEmptyStrings = false, ErrorMessage = "Data is requiredcan not be empty or white space.")]
+		[Required(AllowEmptyStrings = false, ErrorMessage = "Code is required and can not be empty or white space.")]
 		public string Code { get; set; } = string.Empty;
 
-		[Required(AllowEmptyStrings = false, ErrorMessage = "Data is requiredcan not be empty or white space.")]
+		[Required(AllowEmptyStrings = false, ErrorMessage = "Name is required and can not be empty or white space.")]
 		public string Name { get; set; } = string.Empty;
 
 		[Required]

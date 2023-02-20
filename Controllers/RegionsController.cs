@@ -1,15 +1,17 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UdemyCourse.Models.Domain;
 using UdemyCourse.Models.DTOs;
 using UdemyCourse.Repos;
-using UdemyCourse.Validators;
+
 
 namespace UdemyCourse.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]
 	[Produces("application/json")]
+	
 	public class RegionsController : ControllerBase
 	{
 
@@ -24,6 +26,7 @@ namespace UdemyCourse.Controllers
 
 		[HttpGet]
 		[ProducesResponseType(200)]
+		[Authorize(Roles ="reader")]
 		public async Task<IActionResult> GetRegions()
 		{
 			var regions = await _repos.GetAllRegionsAsync();
@@ -37,6 +40,7 @@ namespace UdemyCourse.Controllers
 		[Route("{id}")]
 		[ProducesResponseType(200)]
 		[ProducesResponseType(404)]
+		[Authorize(Roles ="reader")]
 		public async Task<IActionResult> GetRegion(Guid id)
 		{
 			var region = await _repos.GetRegionAsync(id);
@@ -48,10 +52,11 @@ namespace UdemyCourse.Controllers
 		[HttpPost]
 		[ProducesResponseType(201)]
 		[ProducesResponseType(400)]
+		[Authorize(Roles = "writer")]
 		public async Task<IActionResult> PostRegion(PostRegionRequest request)
 		{
-			//Validate the request
-			if (!RegionValidator.ValidatePostRegion(request,ModelState)) return BadRequest(ModelState);
+			//Validate the request (Makes no sense because of data annotations, validation will be performed anyway)
+			//if (!RegionValidator.ValidatePostRegion(request,ModelState)) return BadRequest(ModelState);
 
 			var region = _mapper.Map<Region>(request);
 			region = await _repos.AddRegionAsync(region);
@@ -65,6 +70,7 @@ namespace UdemyCourse.Controllers
 		[ProducesResponseType(404)]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(200)]
+		[Authorize(Roles = "writer")]
 		public async Task<IActionResult> UpdateRegion(Region region)
 		{
 			if (ModelState.IsValid)
@@ -78,15 +84,11 @@ namespace UdemyCourse.Controllers
 		[HttpDelete]
 		[ProducesResponseType(204)]
 		[Route("{id}")]
+		[Authorize(Roles ="writer")]
 		public async Task<IActionResult> DeleteRegion(Guid id)
 		{
 			await _repos.DeleteRegionAsync(id);
 			return NoContent();
 		}
-
-
-
-
-		
 	}
 }

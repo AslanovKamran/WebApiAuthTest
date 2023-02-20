@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UdemyCourse.Models.Domain;
 using UdemyCourse.Models.DTOs;
 using UdemyCourse.Repos;
@@ -19,6 +20,7 @@ namespace UdemyCourse.Controllers
 
 		[HttpGet]
 		[ProducesResponseType(200)]
+		[Authorize(Roles = "reader")]
 		public async Task<IActionResult> GetDifficulties()
 		{
 			var result = await _repos.GetAllWalkDifficulties();
@@ -29,6 +31,7 @@ namespace UdemyCourse.Controllers
 		[ProducesResponseType(200)]
 		[ProducesResponseType(204)]
 		[Route("{id}")]
+		[Authorize(Roles = "reader")]
 		public async Task<IActionResult> GetDifficulty(Guid id)
 		{
 			var result = await _repos.GetWalkDifficultyAsync(id);
@@ -38,6 +41,7 @@ namespace UdemyCourse.Controllers
 		[HttpPost]
 		[ProducesResponseType(201)]
 		[ProducesResponseType(400)]
+		[Authorize(Roles ="writer")]
 		public async Task<IActionResult> PostDifficulty(PostDifficultyRequest request)
 		{
 			if(!WalkDifficultyValidator.ValidatePostDifficulty(request, ModelState)) return BadRequest(ModelState);
@@ -51,7 +55,7 @@ namespace UdemyCourse.Controllers
 		[ProducesResponseType(404)]
 		[ProducesResponseType(200)]
 		[ProducesResponseType(400)]
-		
+		[Authorize(Roles = "writer")]
 		public async Task<IActionResult> UpdateDifficulty(WalkDifficulty difficulty)
 		{
 			if (!await WalkDifficultyValidator.ValidateUpdateDifficulty(difficulty, ModelState, _repos)) return BadRequest(ModelState);
@@ -63,6 +67,7 @@ namespace UdemyCourse.Controllers
 		[HttpDelete]
 		[ProducesResponseType(204)]
 		[Route("{id}")]
+		[Authorize(Roles = "writer")]
 		public async Task<IActionResult> DeleteDifficulty(Guid id)
 		{
 			await _repos.DeleteWalkDifficultyAsync(id);

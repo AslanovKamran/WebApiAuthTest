@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UdemyCourse.Models.Domain;
 using UdemyCourse.Models.DTOs;
@@ -27,6 +28,7 @@ namespace UdemyCourse.Controllers
 
 		[HttpGet]
 		[ProducesResponseType(200)]
+		[Authorize(Roles = "reader")]
 		public async Task<IActionResult> GetWalks()
 		{
 			var walksDomain = await _repos.GetAllWalksAsync();
@@ -38,6 +40,7 @@ namespace UdemyCourse.Controllers
 		[Route("{id}")]
 		[ProducesResponseType(200)]
 		[ProducesResponseType(404)]
+		[Authorize(Roles = "reader")]
 		public async Task<IActionResult> GetWalk(Guid id)
 		{
 			var walkDomain = await _repos.GetWalkAsync(id);
@@ -52,6 +55,7 @@ namespace UdemyCourse.Controllers
 		[HttpPost]
 		[ProducesResponseType(201)]
 		[ProducesResponseType(400)]
+		[Authorize(Roles = "writer")]
 		public async Task<IActionResult> PostWalk(PostWalkRequest request)
 		{
 			if (!await WalkValidator.ValidatePostWalk(request,ModelState,_regionRepository,_wdRepository)) return BadRequest(ModelState);
@@ -65,6 +69,7 @@ namespace UdemyCourse.Controllers
 		[HttpPut]
 		[ProducesResponseType(404)]
 		[ProducesResponseType(200)]
+		[Authorize(Roles = "writer")]
 		public async Task<IActionResult> UpdateWalk(UpdateWalkRequest request)
 		{
 			if (!await WalkValidator.ValidateUpdateWalk(request,ModelState,_repos,_regionRepository,_wdRepository)) return BadRequest(ModelState);
@@ -85,6 +90,7 @@ namespace UdemyCourse.Controllers
 		[HttpDelete]
 		[ProducesResponseType(204)]
 		[Route("{id}")]
+		[Authorize(Roles = "writer")]
 		public async Task<IActionResult> DeleteWalk(Guid id)
 		{
 			await _repos.DeleteWalkAsync(id);
